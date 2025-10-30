@@ -53,6 +53,16 @@ Thumbs.db
 *.tmp
 *.temp
 
+# Testing directory (contains forensic analysis data)
+testing/
+
+# Temporary model repository
+temp_model_repo/
+
+# Cache files
+.cache/
+*.cache
+
 # Model files (if too large)
 *.h5
 *.pkl
@@ -65,4 +75,8 @@ temp_model_repo/
 
 # Data files (if too large for GitHub)
 # Uncomment the next line if your data folder is too large
-# data/
+# data/__pycache__/
+*.py[cod]
+*.py[cod]
+*.class
+venv/
