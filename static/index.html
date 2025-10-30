@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroScope AI - Advanced Brain Tumor Detection</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🧠</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>NeuroScope AI</h1>
+            </div>
+            <nav class="nav">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#results" class="nav-link">Results</a>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <!-- Left side: Text content -->
+                <div class="hero-text">
+                    <h2>Advanced Brain Tumor Detection</h2>
+                    <p>Upload your MRI scan for AI-powered tumor detection, classification, and growth prediction using our cutting-edge machine learning technology.</p>
+                    <p>Our system provides comprehensive analysis including tumor classification, size estimation, growth prediction, and potential symptoms assessment.</p>
+                </div>
+                
+                <!-- Right side: Upload Section -->
+                <div class="upload-section">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h3>Upload MRI Image</h3>
+                            <p>Drag & drop your MRI scan here or click to browse</p>
+                            <p class="file-info">Supported formats: JPG, PNG, JPEG, BMP, TIFF</p>
+                            <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.bmp,.tiff" hidden>
+                            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-folder-open"></i> Choose File
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Image Preview -->
+                    <div class="image-preview" id="imagePreview" style="display: none;">
+                        <img id="previewImg" src="" alt="MRI Preview">
+                        <div class="image-info">
+                            <p id="fileName"></p>
+                            <button class="analyze-btn" id="analyzeBtn">
+                                <i class="fas fa-microscope"></i> Analyze Image
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Loading Animation -->
+                    <div class="loading" id="loading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Analyzing your MRI scan...</p>
+                        <div class="progress-bar">
+                            <div class="progress" id="progress"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results" class="results-section" style="display: none;">
+            <h2>Analysis Results</h2>
+            
+            <!-- No Tumor Result -->
+            <div class="result-card no-tumor" id="noTumorResult" style="display: none;">
+                <div class="result-header">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Good News!</h3>
+                </div>
+                <div class="result-content">
+                    <p>No tumor detected in the MRI scan.</p>
+                    <div class="confidence-bar">
+                        <span>Confidence Level:</span>
+                        <div class="confidence">
+                            <div class="confidence-fill" id="noTumorConfidence"></div>
+                            <span class="confidence-text" id="noTumorConfidenceText"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tumor Detected Result -->
+            <div class="result-card tumor-detected" id="tumorResult" style="display: none;">
+                <div class="result-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Tumor Detected</h3>
+                </div>
+                
+                <div class="result-grid">
+                    <!-- Tumor Classification -->
+                    <div class="result-item">
+                        <h4><i class="fas fa-tags"></i> Tumor Type</h4>
+                        <p class="tumor-type" id="tumorType"></p>
+                        <div class="confidence-bar">
+                            <span>Confidence:</span>
+                            <div class="confidence">
+                                <div class="confidence-fill" id="tumorConfidence"></div>
+                                <span class="confidence-text" id="tumorConfidenceText"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Size -->
+                    <div class="result-item">
+                        <h4><i class="fas fa-ruler"></i> Current Size</h4>
+                        <p class="size-value" id="currentSize"></p>
+                        <p class="size-unit">cm²</p>
+                    </div>
+
+                    <!-- Growth Prediction -->
+                    <div class="result-item">
+                        <h4><i class="fas fa-chart-line"></i> Predicted Size (3 months)</h4>
+                        <p class="size-value predicted" id="predictedSize"></p>
+                        <p class="size-unit">cm²</p>
+                        <p class="growth-rate">Growth Rate: <span id="growthRate"></span> cm²/month</p>
+                    </div>
+
+                    <!-- Symptoms -->
+                    <div class="result-item symptoms">
+                        <h4><i class="fas fa-stethoscope"></i> Current Expected Symptoms</h4>
+                        <ul class="symptoms-list" id="currentSymptoms"></ul>
+                    </div>
+
+                    <div class="result-item symptoms">
+                        <h4><i class="fas fa-exclamation-circle"></i> Future Expected Symptoms</h4>
+                        <ul class="symptoms-list future" id="futureSymptoms"></ul>
+                    </div>
+
+                    <!-- Tumor Information -->
+                    <div class="result-item tumor-info">
+                        <h4><i class="fas fa-info-circle"></i> Tumor Information</h4>
+                        <div class="tumor-description" id="tumorDescription"></div>
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="recommendations">
+                    <h4><i class="fas fa-user-md"></i> Medical Recommendations</h4>
+                    <div class="recommendation-content" id="recommendations"></div>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="disclaimer">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p><strong>Important Disclaimer:</strong> This AI analysis is for informational purposes only and should not replace professional medical diagnosis. Please consult with a qualified healthcare professional for proper medical evaluation and treatment.</p>
+                </div>
+            </div>
+
+            <!-- All Probabilities -->
+            <div class="probabilities-section">
+                <h4>Detailed Classification Probabilities</h4>
+                <div class="probability-bars" id="probabilityBars"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-secondary" onclick="resetAnalysis()">
+                    <i class="fas fa-redo"></i> Analyze Another Image
+                </button>
+                <button class="btn-primary" onclick="downloadReport()">
+                    <i class="fas fa-download"></i> Download Report
+                </button>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about-section">
+            <h2>About NeuroScope AI</h2>
+            <div class="about-grid">
+                <div class="about-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>AI-Powered Detection</h3>
+                    <p>Our advanced VGG16-based CNN model can accurately detect and classify brain tumors from MRI scans.</p>
+                </div>
+                <div class="about-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Growth Prediction</h3>
+                    <p>Predict tumor growth patterns and estimate future size based on current measurements.</p>
+                </div>
+                <div class="about-card">
+                    <i class="fas fa-stethoscope"></i>
+                    <h3>Symptom Analysis</h3>
+                    <p>Get insights into potential symptoms based on tumor type, size, and location.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 NeuroScope AI. Advanced Brain Tumor Detection System.</p>
+            <p>Powered by TensorFlow & FastAPI</p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
